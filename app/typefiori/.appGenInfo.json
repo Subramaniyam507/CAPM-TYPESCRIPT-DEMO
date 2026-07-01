@@ -1,0 +1,28 @@
+{
+  "generationParameters": {
+    "generationDate": "Wed Jul 01 2026 02:25:22 GMT+0000 (Coordinated Universal Time)",
+    "generatorPlatform": "SAP Business Application Studio",
+    "serviceType": "Local CAP",
+    "metadataFilename": "",
+    "serviceUrl": "http://localhost:4004/odata/v4/demo/",
+    "appName": "typefiori",
+    "appTitle": "Typescript Fioiri App",
+    "appDescription": "An SAP Fiori application.",
+    "appNamespace": "com.subbu",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.149.1",
+    "enableEslint": true,
+    "enableTypeScript": true,
+    "showMockDataInfo": false,
+    "generatorVersion": "1.27.0",
+    "template": "List Report Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "BooksSet"
+      }
+    ],
+    "launchText": "To launch the generated app, start your CAP project:  and navigate to the following location in your browser:\n\nhttp://localhost:4004/com.subbu.typefiori/index.html"
+  }
+}

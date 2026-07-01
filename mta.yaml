@@ -1,0 +1,137 @@
+_schema-version: 3.3.0
+ID: CAPM-TYPESCRIPT-DEMO
+description: A simple CAP project.
+version: 1.0.0
+modules:
+- name: CAPM-TYPESCRIPT-DEMO-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: CAPM-TYPESCRIPT-DEMO-db
+  - name: CAPM-TYPESCRIPT-DEMO-destination
+  - name: uaa_CAPM-TYPESCRIPT-DEMO
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    instances: 1
+  build-parameters:
+    builder: npm-ci
+- name: CAPM-TYPESCRIPT-DEMO-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: CAPM-TYPESCRIPT-DEMO-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: CAPM-TYPESCRIPT-DEMO-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: CAPM-TYPESCRIPT-DEMO-destination
+    parameters:
+      content-target: true
+  - name: CAPM-TYPESCRIPT-DEMO_html_repo_host
+    parameters:
+      service-key:
+        name: CAPM-TYPESCRIPT-DEMO_html_repo_host-key
+  - name: uaa_CAPM-TYPESCRIPT-DEMO
+    parameters:
+      service-key:
+        name: uaa_CAPM-TYPESCRIPT-DEMO-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: ztype_CAPM_TYPESCRIPT_DEMO_html_repo_host
+          ServiceInstanceName: CAPM-TYPESCRIPT-DEMO-html5-app-host-service
+          ServiceKeyName: CAPM-TYPESCRIPT-DEMO_html_repo_host-key
+          sap.cloud.service: ztype
+        - Authentication: OAuth2UserTokenExchange
+          Name: ztype_uaa_CAPM_TYPESCRIPT_DEMO
+          ServiceInstanceName: uaa_CAPM-TYPESCRIPT-DEMO
+          ServiceKeyName: uaa_CAPM-TYPESCRIPT-DEMO-key
+          sap.cloud.service: ztype
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: CAPM-TYPESCRIPT-DEMO-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: CAPM-TYPESCRIPT-DEMO_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - comsubbutypefiori.zip
+      name: comsubbutypefiori
+      target-path: resources/
+- name: comsubbutypefiori
+  type: html5
+  path: app/typefiori
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: CAPM-TYPESCRIPT-DEMO-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+- name: CAPM-TYPESCRIPT-DEMO-destination
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          - Authentication: NoAuthentication
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: srv-api
+            ProxyType: Internet
+            Type: HTTP
+            URL: ~{srv-api/srv-url}
+          existing_destinations_policy: update
+    service: destination
+    service-plan: lite
+  requires:
+  - name: srv-api
+- name: CAPM-TYPESCRIPT-DEMO_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: CAPM-TYPESCRIPT-DEMO-html5-app-host-service
+    service-plan: app-host
+- name: uaa_CAPM-TYPESCRIPT-DEMO
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: type-${org}-${space}
+    path: ./xs-security.json
+    service: xsuaa
+    service-plan: application
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production
