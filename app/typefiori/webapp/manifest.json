@@ -114,6 +114,15 @@
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable"
+                  },
+                  "actions": {
+                    "hello": {
+                      "press": ".extension.com.subbu.typefiori.ext.controller.ListExtReport.handleCustom",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "Hello"
+                    }
                   }
                 }
               }
@@ -129,6 +138,15 @@
               "editableHeaderContent": false,
               "contextPath": "/BooksSet"
             }
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ListReport.ListReportController": {
+            "controllerName": "com.subbu.typefiori.ext.controller.ListExtReport"
           }
         }
       }

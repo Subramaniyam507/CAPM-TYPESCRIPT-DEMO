@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/mvc/ControllerExtension","sap/m/MessageBox"],function(e,t){"use strict";const o=e.extend("com.subbu.typefiori.ext.controller.ListExtReport",{override:{onInit(){const e=this.base.getExtensionAPI().getModel()}},handleCustom:function e(o){console.log("handleCustom");let n="DemoService.sayHello";this.base.getExtensionAPI().getEditFlow().invokeAction(n,{model:this.base.getExtensionAPI().getModel()}).then(e=>{t.information(e.getObject().value)})}});return o});
+//# sourceMappingURL=ListExtReport.controller.js.map
