@@ -1,0 +1,23 @@
+{
+    "extends":"./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "rootDir": ".",
+        "outDir": "./gen/srv",
+        "sourceMap": false,
+        "incremental": false,
+        "tsBuildInfoFile": "null",
+        "declaration": false
+},
+    "include": [
+        "srv/**/*.ts",
+        
+    ],
+    "exclude": [
+        "node_modules",
+        "gen",
+        "app",
+        "db",
+        "test",
+    ]
+}
